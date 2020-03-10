@@ -1,0 +1,132 @@
+---
+title: "Site Validation"
+author: "Tina Cheng"
+date: "3/10/2020"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE,
+                      warning = FALSE,
+                      message = FALSE)
+```
+
+# INSTRUCTIONS: Install packages
+
+```{r}
+install.packages("boxr", "tidyverse", "tidyxl")
+```
+
+
+```{r}
+library(boxr)
+library(tidyverse)
+library(tidyxl)
+```
+
+# Data Query 
+
+In data query, search for keyword "site"
+Filtered with this "tag"
+Copy data url 
+
+```{r}
+dir <- "paste url here"
+
+#example:
+dir <- "/Users/tcheng/Box Sync/WNS Data Vault/Pd Continental/data/raw_data/all_site.csv"
+```
+
+
+#Get authenticated in R
+
+If you run this site validation, you need to get a client_id and client_secret from IT admin.
+
+```{r}
+box_auth(client_id = "", client_secret = "")
+```
+
+
+# Read in files
+
+```{r}
+readFUN <- function(file_type, xlsx_sheets, dir) {
+  if(file_type == "csv") {
+    dat <- read_csv(dir)
+  }
+  else if(file_type == "xlsx") {
+    dat <- xlsx_cells(path = dir, sheets = xlsx_sheets)
+  }
+}
+
+test_readFUN <- function() {
+  dat <- readFUN("csv", dir = dir)
+  #is returned dataframe a dataframe
+  nrow(dat) > 0
+}
+
+```
+
+# Verify column names
+
+write 2 functions
+1- function
+2- test that function
+assert if T/F - would throw an error
+R unit test
+extract transform load (ETL)
+
+
+```{r}
+sitename_colnames <- c("site_name", "site_id")
+country_colnames c("country")
+admin1_colnames <- c("admin1", "state", "province") #others???
+admin2_colnames <- c("admin2", "county") #others???
+latitude_colnames <- c("latitude", "Latitude", "Lat", "lat", "x")
+longitude_colnames <- c("longitude", "Longitude", "long", "Long", "lng", "Y")
+sitetype_colnames <- c("site_type")
+sitematerial_colnames <- c("site_material")
+
+# site column enforcement
+verifycolnames <- function() {}
+
+test_verifycolnames <- function() {}
+```
+
+functions are verbs, variables are nouns
+tab complete - make names long and descriptive
+
+# Verify each data type
+
+```{r}
+class(site_name) = c("character", "factor")
+class(latitude) = "numeric"
+class(longitude) = "numeric"
+class(site_type) = c("character", "factor")
+class(site_material) = c("character", "factor")
+```
+
+# For categorical fields, verify categories
+
+```{r}
+site_types <- c("cave", "mine", "tunnel", "adit", "bridge", "culvert", "building")
+site_materials <- c("limestone", "graphite", "gypsum", "manmade - concrete") #others???
+```
+
+# Verify site location
+
+```{r}
+datC <- dat %>% 
+  #check lat long - domain check
+  mutate(latitude within -180 to 180) %>% 
+  mutate(country_fromlatlong = map.where("world", .$longitude, .$latitude),
+         country_check = tolower(country) = tolower(country_fromlatlong))
+```
+
+# Map
+
+```{r}
+
+
+```
+
